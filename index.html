@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Facebook Feed Page</title>
+</head>
+<link rel="stylesheet" type="text/css"
+	href="http://fonts.googleapis.com/css?family=Roboto">
+
+<style type="text/css">
+#body {
+	clear: both;
+	font-weight: 300;
+}
+
+#feedata {
+	margin: 30px;
+}
+
+td {
+	text-align: left;
+}
+</style>
+
+</head>
+
+<style>
+body {
+	font-family: 'Roboto', sans-serif;
+	margin: 0px;
+}
+
+.topnav {
+	text-align: left;
+	padding: 30px;
+	color: #000099;
+	background: url("web.jpg");
+}
+
+.topnav h1 {
+	display: inline-block;
+	padding-left: 70px;
+	font-weight: 300
+}
+
+.topnav img {
+	display: inline-block;
+	min-width: 150px;
+}
+
+.button {
+	background-color: #00b1ff;
+	border: none;
+	color: white;
+	padding: 15px 32px;
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 16px;
+}
+
+#status {
+	margin-top: 10px;
+	font-weight: bold;
+}
+
+h1 {
+	font-style: italic;
+}
+</style>
+
+	<div class="topnav">
+		<h1>Facebook Feed Finder</h1>
+	</div>
+
+
+	<h3 style="color: #42413D; text-align: top;">Welcome back ! Find
+		your top 10 feeds here.</h3>
+
+	<script>
+		// This is called with the results from from FB.getLoginStatus().
+		function statusChangeCallback(response) {
+			console.log('statusChangeCallback');
+			console.log(response);
+			// The response object is returned with a status field that lets the
+			// app know the current login status of the person.
+			// Full docs on the response object can be found in the documentation
+			// for FB.getLoginStatus().
+			if (response.status === 'connected') {
+				// Logged into your app and Facebook.
+				testAPI();
+			} else {
+				// The person is not logged into your app or we are unable to tell.
+				document.getElementById('status').innerHTML = 'Please log '
+						+ 'into this app.';
+			}
+		}
+
+		// This function is called when someone finishes with the Login
+		// Button.  See the onlogin handler attached to it in the sample
+		// code below.
+		function checkLoginState() {
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			});
+		}
+
+		window.fbAsyncInit = function() {
+			FB.init({
+				appId : '669014423483622',
+				cookie : true, // enable cookies to allow the server to access 
+				// the session
+				xfbml : true, // parse social plugins on this page
+				version : 'v2.8' // use graph api version 2.8
+			});
+
+			FB.getLoginStatus(function(response) {
+				statusChangeCallback(response);
+			});
+
+		};
+
+		(function(d, s, id) {
+			var js, fjs = d.getElementsByTagName(s)[0];
+			if (d.getElementById(id))
+				return;
+			js = d.createElement(s);
+			js.id = id;
+			js.src = "https://connect.facebook.net/en_US/sdk.js";
+			fjs.parentNode.insertBefore(js, fjs);
+		}(document, 'script', 'facebook-jssdk'));
+
+		// Here we run a very simple test of the Graph API after login is
+		// successful.  See statusChangeCallback() for when this call is made.
+		function testAPI() {
+			console.log('Welcome!  Fetching your information.... ');
+			FB.api('/me', function(response) {
+				console.log('Successful login : ', FB
+						.getAuthResponse());
+				document.getElementById('status').innerHTML = 'Thanks for logging in, '
+						+ response.name + '!';
+			});
+		}
+
+		function showFeed() {
+			var Http = new XMLHttpRequest();
+			var url = 'https://graph.facebook.com/v2.5/me?fields=feed.limit(10)&access_token='
+					+ FB.getAuthResponse().accessToken;
+			Http.open("GET", url);
+			Http.send();
+			Http.onreadystatechange = function(e) {
+
+				var parentDiv = document.getElementById("feedata");
+				while (parentDiv.firstChild) {
+					parentDiv.removeChild(parentDiv.firstChild);
+				}
+
+				var myobj = JSON.parse(Http.responseText);
+				var arr = myobj.feed.data;
+				console.log(arr);
+
+				var table = document.createElement("table");
+				var tblBody = document.createElement("tbody");
+
+				// cells creation
+				for (var i = 0; i < arr.length; i++) {
+					if (arr[i].message) {
+						// table row creation
+						var row = document.createElement("tr");
+						var cell1 = document.createElement("td");
+						var cell2 = document.createElement("td");
+						var date = new Date(arr[i].created_time);
+
+						cell1.innerHTML = date.toLocaleDateString() + " "
+								+ date.toLocaleTimeString();
+
+						var link = document.createElement("a");
+						link.href = "https://facebook.com/"+arr[i].id
+						link.innerHTML = arr[i].message;
+						cell2.appendChild(link);
+						row.appendChild(cell1);
+						row.appendChild(cell2);
+
+						//row added to end of table body
+						tblBody.appendChild(row);
+					}
+				}
+
+				// append the <tbody> inside the <table>
+				table.appendChild(tblBody);
+				// put <table> in the <body>
+				parentDiv.appendChild(table);
+				// tbl border attribute to 
+				table.setAttribute("border", "2");
+			};
+
+		}
+	</script>
+
+	<!--
+		Facebook login button.	
+	-->
+
+	<fb:login-button scope="public_profile,email,user_posts"
+		onlogin="checkLoginState();" id="fbButton">
+	</fb:login-button>
+	<div id="status"></div>
+
+
+	<div style="text-align: center;">
+		<input class="button" onclick="showFeed()" type="submit"
+			value="Get your Feeds" />
+
+		<div id="feedata"></div>
+	</div>
+</body>
+</html>
+
+
+
+
+
