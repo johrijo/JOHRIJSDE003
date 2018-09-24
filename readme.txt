@@ -15,11 +15,14 @@ SOLUTION EXPLANATION
 HOW TO EXECUTE THIS
 
 1. Create a new facebook app in https://developers.facebook.com/apps/ and update the app id in the index.html (line 93)
-2. Open https://lsdvnslkdnlsdn and this will display the UI for extracting one's own Facebook feed.
+2. Open https://johrijo.github.io/JOHRIJSDE003/ and this will display the UI for extracting one's own Facebook feed.
 3. Click on the facebook login button. This will attempt to login into the page. 
 4. A message will be displayed "Thanks for logging in, <Your name>!"
 5. After that click on "Get your Feeds"
-6. A table of your latest feed will be displayed
+NOTE: Currently it will not alow other users to fetch  as the Facebook APP review is not Done (https://developers.facebook.com/docs/facebook-login/permissions#reference-user_posts)
+(let me knmow if you want to be a developer/tester of my app, i'll send you a requrst and you can retrieve your posts )
+6. A table of your last 10 feeds feed will be displayed
 
-REFERENCE
-Youtube link for demo and code walkthrough
+DEMO VIDEO
+demo and code walkthrough : Q3 Demo Video.mp4
+
